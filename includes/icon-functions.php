@@ -6,8 +6,7 @@
  * @subpackage Sea_Salt_Press
  * @since 1.0
  */
- 
- 
+
 /**
 * seasaltpress_include_svg_icons function.
 * 
@@ -23,7 +22,8 @@ if( ! function_exists('seasaltpress_include_svg_icons') ){
 		}
 		
 		else{
-			$svg_icons = plugin_dir_path( __FILE__ ) . ( '/assets/icons/symbol-defs.svg' );
+		
+			$svg_icons = IODINE_PATH . 'assets/icons/symbol-defs.svg';
 		}
 	
 		// If it exists, include it.
