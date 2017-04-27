@@ -6,6 +6,9 @@
  * Author: Shamai Greenfield
  */
 
+
+define( 'IODINE_PATH', plugin_dir_path( __FILE__ ) );
+
 class Iodine_Plugin {
 
 	protected $theme;
@@ -26,7 +29,7 @@ class Iodine_Plugin {
 		 * Add shortcodes to Widgets
 		 */
 		add_filter('widget_text', 'do_shortcode');
-
+ 
 
 
 		/**
