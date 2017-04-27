@@ -7,6 +7,7 @@
  * @since 1.0
  */
 
+
 /**
 * seasaltpress_include_svg_icons function.
 * 
@@ -28,7 +29,8 @@ if( ! function_exists('seasaltpress_include_svg_icons') ){
 	
 		// If it exists, include it.
 		if ( file_exists( $svg_icons ) ) {
-			require_once( $svg_icons );
+			require( $svg_icons );
+			
 		}
 	}
 	add_action( 'wp_footer', 'seasaltpress_include_svg_icons', 9999 );
