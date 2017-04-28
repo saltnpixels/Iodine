@@ -7,31 +7,27 @@
  * @since 1.0
  */
 
+
 /**
 * seasaltpress_include_svg_icons function.
 * 
 * @access public
 * @return void
-* Include the icons fi the theme has not included its own already.
+* Include the icons if the theme has not included its own already.
 */
-if( ! function_exists('seasaltpress_include_svg_icons') ){
-	function seasaltpress_include_svg_icons() {
-		// Let users override with their own icons from their theme
-		if(file_exists( get_parent_theme_file_path( '/assets/icons/symbol-defs.svg' ) ) ){
-			$svg_icons = get_parent_theme_file_path( '/assets/icons/symbol-defs.svg' ); 
-		}
+if( ! file_exists( get_parent_theme_file_path( '/assets/icons/symbol-defs.svg' ) ) ){
+
+	function iodine_include_svg_icons() {
 		
-		else{
-		
-			$svg_icons = IODINE_PATH . 'assets/icons/symbol-defs.svg';
-		}
-	
+		$svg_icons = IODINE_PATH . 'assets/icons/symbol-defs.svg';
+
 		// If it exists, include it.
 		if ( file_exists( $svg_icons ) ) {
 			require_once( $svg_icons );
+			
 		}
 	}
-	add_action( 'wp_footer', 'seasaltpress_include_svg_icons', 9999 );
+	add_action( 'wp_footer', 'iodine_include_svg_icons', 9999 );
 }
 
 /**
