@@ -164,7 +164,17 @@ if( !function_exists('seasaltpress_dropdown_icon_to_menu_link')){
 }
 
 //allow shortcodes in title
-add_filter( 'the_title', 'do_shortcode' );
+
+function iodine_shortcode($title, $id = NULL){
+	if( ! is_admin() ){
+		return do_shortcode($title);
+	}
+	else{
+		return $title;
+	}
+}
+
+add_filter( 'the_title', 'iodine_shortcode', 10, 2 );
 
 // We need some CSS to position the paragraph
 function seasaltpress_svg_icon_css() {
