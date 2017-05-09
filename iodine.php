@@ -6,7 +6,7 @@
  * Author: Shamai Greenfield
  */
 
-
+ 
 define( 'IODINE_PATH', plugin_dir_path( __FILE__ ) );
 
 class Iodine_Plugin {
