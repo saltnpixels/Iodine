@@ -9,25 +9,27 @@
 
 
 /**
-* seasaltpress_include_svg_icons function.
-* 
-* @access public
-* @return void
-* Include the icons if the theme has not included its own already.
-*/
-if( ! file_exists( get_parent_theme_file_path( '/assets/icons/symbol-defs.svg' ) ) ){
+ * seasaltpress_include_svg_icons function.
+ *
+ * @access public
+ * @return void
+ * Include the icons if the theme has not included its own already. Aslo include simple css for them.
+ */
+if ( ! file_exists( get_parent_theme_file_path( '/assets/icons/symbol-defs.svg' ) ) ) {
 
 	function iodine_include_svg_icons() {
-		
+
 		$svg_icons = IODINE_PATH . 'assets/icons/symbol-defs.svg';
 
 		// If it exists, include it.
 		if ( file_exists( $svg_icons ) ) {
 			require_once( $svg_icons );
-			
+
 		}
 	}
+
 	add_action( 'wp_footer', 'iodine_include_svg_icons', 9999 );
+	add_action( 'wp_head', 'seasaltpress_svg_icon_css' );
 }
 
 /**
@@ -36,42 +38,42 @@ if( ! file_exists( get_parent_theme_file_path( '/assets/icons/symbol-defs.svg' )
  * @param array $args {
  *     Parameters needed to display an SVG.
  *
- *     @type string $icon  Required SVG icon filename.
- *     @type string $title Optional SVG title.
- *     @type string $desc  Optional SVG description.
+ * @type string $icon Required SVG icon filename.
+ * @type string $title Optional SVG title.
+ * @type string $desc Optional SVG description.
  * }
  * @return string SVG markup.
  */
- 
-if( ! function_exists('seasaltpress_get_svg')){ 
+$slug = get_option( 'stylesheet' );
+if ( ! function_exists( $slug . '_get_svg' ) ) {
 	function seasaltpress_get_svg( $args = array() ) {
 		// Make sure $args are an array.
 		if ( empty( $args ) ) {
 			return __( 'Please define default parameters in the form of an array.', 'seasaltpress' );
 		}
-	
+
 		// Define an icon.
 		if ( false === array_key_exists( 'icon', $args ) ) {
 			return __( 'Please define an SVG icon filename.', 'seasaltpress' );
 		}
-	
+
 		// Set defaults.
 		$defaults = array(
-			'icon'        => '',
-			'title'       => '',
-			'desc'        => '',
-			'fallback'    => false,
+			'icon'     => '',
+			'title'    => '',
+			'desc'     => '',
+			'fallback' => false,
 		);
-	
+
 		// Parse args.
 		$args = wp_parse_args( $args, $defaults );
-	
+
 		// Set aria hidden.
 		$aria_hidden = ' aria-hidden="true"';
-	
+
 		// Set ARIA.
 		$aria_labelledby = '';
-	
+
 		/*
 		 * Sea Salt Press doesn't use the SVG title or description attributes; non-decorative icons are described with .screen-reader-text.
 		 *
@@ -87,25 +89,25 @@ if( ! function_exists('seasaltpress_get_svg')){
 			$aria_hidden     = '';
 			$unique_id       = uniqid();
 			$aria_labelledby = ' aria-labelledby="title-' . $unique_id . '"';
-	
+
 			if ( $args['desc'] ) {
 				$aria_labelledby = ' aria-labelledby="title-' . $unique_id . ' desc-' . $unique_id . '"';
 			}
 		}
-	
+
 		// Begin SVG markup.
 		$svg = '<svg class="icon icon-' . esc_attr( $args['icon'] ) . '"' . $aria_hidden . $aria_labelledby . ' role="img">';
-	
+
 		// Display the title.
 		if ( $args['title'] ) {
 			$svg .= '<title id="title-' . $unique_id . '">' . esc_html( $args['title'] ) . '</title>';
-	
+
 			// Display the desc only if the title is already set.
 			if ( $args['desc'] ) {
 				$svg .= '<desc id="desc-' . $unique_id . '">' . esc_html( $args['desc'] ) . '</desc>';
 			}
 		}
-	
+
 		/*
 		 * Display the icon.
 		 *
@@ -114,14 +116,14 @@ if( ! function_exists('seasaltpress_get_svg')){
 		 * See https://core.trac.wordpress.org/ticket/38387.
 		 */
 		$svg .= ' <use href="#icon-' . esc_html( $args['icon'] ) . '" xlink:href="#icon-' . esc_html( $args['icon'] ) . '"></use> ';
-	
+
 		// Add some markup to use as a fallback for browsers that do not support SVGs.
 		if ( $args['fallback'] ) {
 			$svg .= '<span class="svg-fallback icon-' . esc_attr( $args['icon'] ) . '"></span>';
 		}
-	
+
 		$svg .= '</svg>';
-	
+
 		return $svg;
 	}
 }
@@ -129,11 +131,12 @@ if( ! function_exists('seasaltpress_get_svg')){
 /**
  * Shortcode added to display svg's for seasaltpress
  */
-if( ! function_exists('seasaltpress_show_svg')){
-	 function seasaltpress_show_svg( $atts ) {
-		
+if ( ! function_exists( $slug . '_show_svg' ) ) {
+	function seasaltpress_show_svg( $atts ) {
+
 		return seasaltpress_get_svg( $atts );
 	}
+
 	add_shortcode( 'svg', 'seasaltpress_show_svg' );
 }
 
@@ -143,48 +146,48 @@ if( ! function_exists('seasaltpress_show_svg')){
  * Seasaltpress added svg shortcode ability to titles.
  *
  * @param  string $title The menu item's title.
- * @param  object $item  The current menu item.
- * @param  array  $args  An array of wp_nav_menu() arguments.
+ * @param  object $item The current menu item.
+ * @param  array  $args An array of wp_nav_menu() arguments.
  * @param  int    $depth Depth of menu item. Used for padding.
+ *
  * @return string $title The menu item's title with dropdown icon.
  */
-if( !function_exists('seasaltpress_dropdown_icon_to_menu_link')){
+if ( ! function_exists( $slug . '_dropdown_icon_to_menu_link' ) ) {
 	function seasaltpress_dropdown_icon_to_menu_link( $title, $item, $args, $depth ) {
 		if ( 'top' === $args->theme_location ) {
 			foreach ( $item->classes as $value ) {
 				if ( 'menu-item-has-children' === $value || 'page_item_has_children' === $value ) {
-					$title = $title  . ' ' . seasaltpress_get_svg( array( 'icon' => 'angle-down' ) );
+					$title = $title . ' ' . seasaltpress_get_svg( array( 'icon' => 'angle-down' ) );
 				}
 			}
 		}
-	
+
 		return do_shortcode( $title );
 	}
+
 	add_filter( 'nav_menu_item_title', 'seasaltpress_dropdown_icon_to_menu_link', 10, 4 );
 }
 
 //allow shortcodes in title
 
-function iodine_shortcode($title, $id = NULL){
-	if( ! is_admin() ){
-		return do_shortcode($title);
-	}
-	else{
+function iodine_title_shortcode( $title, $id = null ) {
+	if ( ! is_admin() ) {
+		return do_shortcode( $title );
+	} else {
 		return $title;
 	}
 }
 
-add_filter( 'the_title', 'iodine_shortcode', 10, 2 );
+add_filter( 'the_title', 'iodine_title_shortcode', 10, 2 );
 
-// We need some CSS to position the paragraph
+// We need some CSS to position the icons
 function seasaltpress_svg_icon_css() {
-	
-
 	echo "<style type='text/css'>
+     /* iodine icon fix */
 	.icon {
 		display: inline-block;
 		stroke-width: 0;
-	  stroke: currentColor;
+	    stroke: currentColor;
 		height: 1em;
 		vertical-align: middle;
 		width: 1em;
@@ -198,4 +201,4 @@ svg{
 	";
 }
 
-add_action( 'wp_head', 'seasaltpress_svg_icon_css' );
+
