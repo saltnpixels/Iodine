@@ -29,7 +29,7 @@ if ( ! file_exists( get_parent_theme_file_path( '/assets/icons/symbol-defs.svg' 
 	}
 
 	add_action( 'wp_footer', 'iodine_include_svg_icons', 9999 );
-	add_action( 'wp_head', 'seasaltpress_svg_icon_css' );
+	add_action( 'wp_head', 'iodine_svg_icon_css' );
 }
 
 /**
@@ -46,7 +46,7 @@ if ( ! file_exists( get_parent_theme_file_path( '/assets/icons/symbol-defs.svg' 
  */
 $slug = get_option( 'stylesheet' );
 if ( ! function_exists( $slug . '_get_svg' ) ) {
-	function seasaltpress_get_svg( $args = array() ) {
+	function iodine_get_svg( $args = array() ) {
 		// Make sure $args are an array.
 		if ( empty( $args ) ) {
 			return __( 'Please define default parameters in the form of an array.', 'seasaltpress' );
@@ -126,19 +126,12 @@ if ( ! function_exists( $slug . '_get_svg' ) ) {
 
 		return $svg;
 	}
+	add_shortcode( 'svg', 'iodine_get_svg' );
+}
+else{
+	add_shortcode( 'svg', $slug . '_get_svg' );
 }
 
-/**
- * Shortcode added to display svg's for seasaltpress
- */
-if ( ! function_exists( $slug . '_show_svg' ) ) {
-	function seasaltpress_show_svg( $atts ) {
-
-		return seasaltpress_get_svg( $atts );
-	}
-
-	add_shortcode( 'svg', 'seasaltpress_show_svg' );
-}
 
 
 /**
@@ -153,7 +146,7 @@ if ( ! function_exists( $slug . '_show_svg' ) ) {
  * @return string $title The menu item's title with dropdown icon.
  */
 if ( ! function_exists( $slug . '_dropdown_icon_to_menu_link' ) ) {
-	function seasaltpress_dropdown_icon_to_menu_link( $title, $item, $args, $depth ) {
+	function iodine_dropdown_icon_to_menu_link( $title, $item, $args, $depth ) {
 		if ( 'top' === $args->theme_location ) {
 			foreach ( $item->classes as $value ) {
 				if ( 'menu-item-has-children' === $value || 'page_item_has_children' === $value ) {
@@ -165,11 +158,13 @@ if ( ! function_exists( $slug . '_dropdown_icon_to_menu_link' ) ) {
 		return do_shortcode( $title );
 	}
 
-	add_filter( 'nav_menu_item_title', 'seasaltpress_dropdown_icon_to_menu_link', 10, 4 );
+	add_filter( 'nav_menu_item_title', 'iodine_dropdown_icon_to_menu_link', 10, 4 );
+}
+else{
+	add_filter( 'nav_menu_item_title', $slug . '_dropdown_icon_to_menu_link', 10, 4 );
 }
 
 //allow shortcodes in title
-
 function iodine_title_shortcode( $title, $id = null ) {
 	if ( ! is_admin() ) {
 		return do_shortcode( $title );
@@ -177,11 +172,10 @@ function iodine_title_shortcode( $title, $id = null ) {
 		return $title;
 	}
 }
-
 add_filter( 'the_title', 'iodine_title_shortcode', 10, 2 );
 
 // We need some CSS to position the icons
-function seasaltpress_svg_icon_css() {
+function iodine_svg_icon_css() {
 	echo "<style type='text/css'>
      /* iodine icon fix */
 	.icon {
