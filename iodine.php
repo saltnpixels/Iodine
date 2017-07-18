@@ -108,9 +108,13 @@ class Iodine_Plugin {
 				}
 
 			}
+			//whether exists or not we now allow it to be used as a shortcode
+			add_shortcode( 'logo', 'iodine_logo' );
 		}
-		//whether exists or not we now allow it to be used as a shortcode
-		add_shortcode( 'logo', 'seasaltpress_logo' );
+		else{
+			add_shortcode( 'logo', $slug . '_logo' );
+		}
+		
 
 
 		include( plugin_dir_path( __FILE__ ) . ( 'includes/icon-functions.php' ) );
